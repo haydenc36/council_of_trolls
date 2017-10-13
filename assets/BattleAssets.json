@@ -50,7 +50,7 @@
                 "scale": {"x": 1, "y": 1}
             }
         },
-        "monk": {
+        "Monk": {
             "type": "player_unit",
             "position": {"x": 160, "y": 340},
             "properties": {
@@ -58,13 +58,13 @@
                 "group": "players",
                 "scale": {"x": 0.5, "y": 0.5},
                 "stats": {
-                    "attack": 15,
+                    "attack": 1,
                     "defense": 5,
                     "health": 100
                 }
             }
         },
-        "devil": {
+        "Devil": {
             "type": "enemy_unit",
             "position": {"x": 900, "y": 250},
             "properties": {

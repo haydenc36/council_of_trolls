@@ -1,4 +1,5 @@
 // English Village
+var demo = demo || {};
 var monk1, cursors1, vel1, buildings2_noWalk1, buildings1_noWalk1, mountains_nowalking1;
 
 demo.state1 = function(){};

@@ -1,4 +1,5 @@
 // Aristocrat's House
+var demo = demo || {};
 var monk2, cursors2, vel2, walls_noWalk2, furniture_noWalk2;
 
 demo.state2 = function(){};
