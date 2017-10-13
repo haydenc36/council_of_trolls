@@ -1,0 +1,13 @@
+{ "columns":24,
+ "image":"..\/tilesets\/barracks.png",
+ "imageheight":1024,
+ "imagewidth":768,
+ "margin":0,
+ "name":"barracks",
+ "spacing":0,
+ "tilecount":768,
+ "tileheight":32,
+ "tilewidth":32,
+ "transparentcolor":"#ff00ff",
+ "type":"tileset"
+}

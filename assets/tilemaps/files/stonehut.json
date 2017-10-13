@@ -1,0 +1,12 @@
+{ "columns":31,
+ "image":"..\/tilesets\/hut3.png",
+ "imageheight":800,
+ "imagewidth":992,
+ "margin":0,
+ "name":"stonehut",
+ "spacing":0,
+ "tilecount":775,
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset"
+}
