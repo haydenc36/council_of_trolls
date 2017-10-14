@@ -5,25 +5,35 @@ demo.BattleState = function () {
     Phaser.State.call(this);
     
     this.prefab_classes = {
-        "background": demo.Prefab.prototype.constructor,
+        "background": demo.TilePrefab.prototype.constructor,
         "rectangle": demo.Prefab.prototype.constructor,
         "player_unit": demo.PlayerUnit.prototype.constructor,
-        "enemy_unit": demo.EnemyUnit.prototype.constructor
+        "enemy_unit": demo.EnemyUnit.prototype.constructor,
+        "inventory": demo.Inventory.prototype.constructor
     };
     
-    this.TEXT_STYLE = {font: "21px Impact", fill: "#FFF"};
+    this.TEXT_STYLE = {font: "30px Impact", fill: "#FFFFFF"};
 };
 
 demo.BattleState.prototype = Object.create(Phaser.State.prototype);
 demo.BattleState.prototype.constructor = demo.BattleState;
 
-demo.BattleState.prototype.init = function (level_data/*, extra_parameters*/) {
+demo.BattleState.prototype.init = function (level_data, extra_parameters) {
     "use strict";
     this.level_data = level_data;
-    /*this.enemy_data = extra_parameters.enemy_data;
-    this.party_data = extra_parameters.party_data;*/
+    this.encounter = extra_parameters.encounter;
+    this.party_data = extra_parameters.party_data;
+    // receive the inventory from WorldState
+    this.inventory = extra_parameters.inventory;
     
     this.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+    this.scale.pageAlignHorizontally = true;
+    this.scale.pageAlignVertically = true;
+};
+
+demo.BattleState.prototype.preload = function () {
+    "use strict";
+    //this.load.text("experience_table", "assets/levels/experience_table.json");
 };
 
 demo.BattleState.prototype.create = function () {
@@ -43,14 +53,20 @@ demo.BattleState.prototype.create = function () {
             // create prefab
             this.create_prefab(prefab_name, this.level_data.prefabs[prefab_name]);
         }
-    };
+    }
     
-    /*
+    // if there is no inventory from WorldState, create an empty one
+    if (this.inventory) {
+        this.prefabs.inventory = this.inventory;
+    } else {
+        this.prefabs.inventory = new demo.Inventory(this, "inventory", {x: 0, y: 0}, {group: "items"});
+    }
+    
     // create enemy units
-    for (enemy_unit_name in this.enemy_data) {
-        if (this.enemy_data.hasOwnProperty(enemy_unit_name)) {
+    /*for (enemy_unit_name in this.encounter.enemy_data) {
+        if (this.encounter.enemy_data.hasOwnProperty(enemy_unit_name)) {
             // create enemy units
-            this.create_prefab(enemy_unit_name, this.enemy_data[enemy_unit_name]);
+            this.create_prefab(enemy_unit_name, this.encounter.enemy_data[enemy_unit_name]);
         }
     }
     
@@ -60,7 +76,10 @@ demo.BattleState.prototype.create = function () {
             // create player units
             this.create_prefab(player_unit_name, this.party_data[player_unit_name]);
         }
-    }*/
+    }
+    
+    // save experience table
+    this.experience_table = JSON.parse(this.game.cache.getText("experience_table"));*/
     
     this.init_hud();
     
@@ -93,14 +112,17 @@ demo.BattleState.prototype.init_hud = function () {
     "use strict";
     var unit_index, player_unit_health;
     
-    // show enemy units
-    this.show_units("enemies", {x: 904, y: 480}, demo.EnemyMenuItem.prototype.constructor);
-    
     // show player actions
     this.show_player_actions({x: 477, y: 480});
     
     // show player units
     this.show_units("players", {x: 50, y: 480}, demo.PlayerMenuItem.prototype.constructor);
+    
+    // show enemy units
+    this.show_units("enemies", {x: 904, y: 480}, demo.EnemyMenuItem.prototype.constructor);
+    
+    // create items menu
+    this.prefabs.inventory.create_menu({x: 477, y: 480});
 };
 
 demo.BattleState.prototype.show_units = function (group_name, position, menu_item_constructor) {
@@ -111,7 +133,7 @@ demo.BattleState.prototype.show_units = function (group_name, position, menu_ite
     unit_index = 0;
     menu_items = [];
     this.groups[group_name].forEach(function (unit) {
-        unit_menu_item = new menu_item_constructor(this, unit.name + "_menu_item", {x: position.x, y: position.y + unit_index * 20}, {group: "hud", text: unit.name, style: Object.create(this.TEXT_STYLE)});
+        unit_menu_item = new menu_item_constructor(this, unit.name + "_menu_item", {x: position.x, y: position.y + unit_index * 50}, {group: "hud", text: unit.name, style: Object.create(this.TEXT_STYLE)});
         unit_index += 1;
         menu_items.push(unit_menu_item);
     }, this);
@@ -123,12 +145,14 @@ demo.BattleState.prototype.show_player_actions = function (position) {
     "use strict";
     var actions, actions_menu_items, action_index, actions_menu;
     // available actions
-    actions = [{text: "Attack", item_constructor: demo.AttackMenuItem.prototype.constructor}];
+    actions = [{text: "Attack", item_constructor: demo.AttackMenuItem.prototype.constructor},
+               {text: "Magic", item_constructor: demo.MagicAttackMenuItem.prototype.constructor},
+               {text: "Item", item_constructor: demo.InventoryMenuItem.prototype.constructor}];
     actions_menu_items = [];
     action_index = 0;
     // create a menu item for each action
     actions.forEach(function (action) {
-        actions_menu_items.push(new action.item_constructor(this, action.text + "_menu_item", {x: position.x, y: position.y + action_index * 20}, {group: "hud", text: action.text, style: Object.create(this.TEXT_STYLE)}));
+        actions_menu_items.push(new action.item_constructor(this, action.text + "_menu_item", {x: position.x, y: position.y + action_index * 50}, {group: "hud", text: action.text, style: Object.create(this.TEXT_STYLE)}));
         action_index += 1;
     }, this);
     actions_menu = new demo.Menu(this, "actions_menu", position, {group: "hud", menu_items: actions_menu_items});
@@ -138,13 +162,14 @@ demo.BattleState.prototype.next_turn = function () {
     "use strict";
     // if all enemy units are dead, go back to the world state
     if (this.groups.enemies.countLiving() === 0) {
-        this.end_battle();
+        //this.end_battle();
     }
     
     // if all player units are dead, restart the game
     if (this.groups.players.countLiving() === 0) {
-        this.game_over();
+        //this.game_over();
     }
+    
     // takes the next unit
     this.current_unit = this.units.dequeue();
     // if the unit is alive, it acts, otherwise goes to the next turn
@@ -165,10 +190,22 @@ demo.BattleState.prototype.game_over = function () {
 
 demo.BattleState.prototype.end_battle = function () {
     "use strict";
-    // save current party health
+    var received_experience;
+    
+    // receive battle reward
+    received_experience = this.encounter.reward.experience;
     this.groups.players.forEach(function (player_unit) {
+        // receive experience from enemy
+        player_unit.receive_experience(received_experience / this.groups.players.children.length);
+        // save current party stats
         this.party_data[player_unit.name].properties.stats = player_unit.stats;
     }, this);
+    
+    
+    this.encounter.reward.items.forEach(function (item_object) {
+        this.prefabs.inventory.collect_item(item_object);
+    }, this);
+    
     // go back to WorldState with the current party data
     this.game.state.start("state1", true, false, {party_data: this.party_data});
 };
