@@ -164,10 +164,6 @@ demo.BattleState.prototype.show_units = function (group_name, position, menu_ite
     }, this);
     // create units menu
     units_menu = new demo.Menu(this, group_name + "_menu", position, {group: "hud", menu_items: menu_items});
-    
-    if (group_name === "items"){
-        units_menu.hide();
-    }
 };
 
 demo.BattleState.prototype.show_player_actions = function (position) {
@@ -176,7 +172,9 @@ demo.BattleState.prototype.show_player_actions = function (position) {
     // available actions
     actions = [{text: "Attacks", item_constructor: demo.AttackInventoryMenuItem.prototype.constructor},
                {text: "Magic Skills", item_constructor: demo.MagicInventoryMenuItem.prototype.constructor},
-               {text: "Item", item_constructor: demo.InventoryMenuItem.prototype.constructor}];
+               {text: "Item", item_constructor: demo.InventoryMenuItem.prototype.constructor},
+               {text: "Retreat", item_constructor: demo.RetreatMenuItem.prototype.constructor}
+              ];
     actions_menu_items = [];
     action_index = 0;
     // create a menu item for each action

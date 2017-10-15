@@ -22,12 +22,14 @@ demo.PlayerMenuItem.prototype.select = function () {
     this.game_state.prefabs.magicskills.use_skill(this.game_state.current_item, player_unit);
     
     // hide items menu
-    this.game_state.prefabs.items_menu.disable();
     this.game_state.prefabs.items_menu.hide();
+    this.game_state.prefabs.items_menu.disable();
     // hide magic skills menu
-    this.game_state.prefabs.magicskills_menu.disable();
     this.game_state.prefabs.magicskills_menu.hide();
+    this.game_state.prefabs.magicskills_menu.disable();
     // hide attack skills menu
+    this.game_state.prefabs.attackskills_menu.hide();
+    this.game_state.prefabs.attackskills_menu.disable();
     
     // show actions menu
     this.game_state.prefabs.actions_menu.show();

@@ -24,6 +24,9 @@ demo.AttackInventory.prototype.create_menu = function (position) {
         menu_items.push(menu_item);
     };
     
+    menu_item = new demo.ReturnMenuItem(this.game_state, "Return_menu_item", {x: position.x, y: position.y + attack_index * 50}, {group: "hud", text: "Return", style: Object.create(this.game_state.TEXT_STYLE)})
+    menu_items.push(menu_item);
+    
     // create units menu
     attackskills_menu = new demo.Menu(this.game_state, "attackskills_menu", position, {group: "hud", menu_items: menu_items});
     attackskills_menu.hide();

@@ -24,6 +24,9 @@ demo.MagicInventory.prototype.create_menu = function (position) {
         menu_items.push(menu_item);
     };
     
+    menu_item = new demo.ReturnMenuItem(this.game_state, "Return_menu_item", {x: position.x, y: position.y + magic_index * 50}, {group: "hud", text: "Return", style: Object.create(this.game_state.TEXT_STYLE)})
+    menu_items.push(menu_item);
+    
     // create units menu
     magicskills_menu = new demo.Menu(this.game_state, "magicskills_menu", position, {group: "hud", menu_items: menu_items});
     magicskills_menu.hide();

@@ -33,6 +33,9 @@ demo.Inventory.prototype.create_menu = function (position) {
         menu_items.push(menu_item);
     };
     
+    menu_item = new demo.ReturnMenuItem(this.game_state, "Return_menu_item", {x: position.x, y: position.y + item_index * 50}, {group: "hud", text: "Return", style: Object.create(this.game_state.TEXT_STYLE)})
+    menu_items.push(menu_item);
+    
     // create units menu
     items_menu = new demo.Menu(this.game_state, "items_menu", position, {group: "hud", menu_items: menu_items});
     items_menu.hide();
