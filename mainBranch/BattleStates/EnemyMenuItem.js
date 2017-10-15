@@ -16,6 +16,8 @@ demo.EnemyMenuItem.prototype.select = function () {
     // attack selected enemy
     //this.game_state.current_attack.hit(enemy);
     this.game_state.prefabs.attackskills.use_skill(this.game_state.current_attack, enemy);
+    this.game_state.prefabs.attackskills_menu.hide();
+    this.game_state.prefabs.actions_menu.show();
     // disable menus
     this.game_state.prefabs.enemies_menu.disable();
     this.game_state.prefabs.players_menu.disable();

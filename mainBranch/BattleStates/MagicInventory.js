@@ -38,7 +38,6 @@ demo.MagicInventory.prototype.use_skill = function (skill_name, target) {
     // remove item from items list
     for (magic_index = 0; magic_index < this.magic.length; magic_index += 1) {
         if (this.magic[magic_index].name === skill_name) {
-            console.log(this.magic[magic_index]);
             this.magic[magic_index].use(target);
             break;
         }

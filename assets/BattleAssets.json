@@ -82,7 +82,7 @@
                 "stats": {
                     "attack": 10,
                     "defense": 1,
-                    "health": 30
+                    "health": 75
                 }
             }
         },
@@ -128,7 +128,7 @@
             "properties": {
                 "group": "attackskills",
                 "stats": {
-                    "attack_mult": 3,
+                    "attack_mult": 1.5,
                     "req_health": 30
                 }
             }
@@ -139,7 +139,7 @@
             "properties": {
                 "group": "attackskills",
                 "stats": {
-                    "attack_mult": 30,
+                    "attack_mult": 1.5,
                     "req_mana": 30
                 }
             }
