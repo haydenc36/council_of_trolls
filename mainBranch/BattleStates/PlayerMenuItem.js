@@ -19,10 +19,17 @@ demo.PlayerMenuItem.prototype.select = function () {
     player_unit = this.game_state.prefabs[this.text];
     // use current selected item on selected unit
     this.game_state.prefabs.inventory.use_item(this.game_state.current_item, player_unit);
+    this.game_state.prefabs.magicskills.use_skill(this.game_state.current_item, player_unit);
     
-    // show actions menu again
+    // hide items menu
     this.game_state.prefabs.items_menu.disable();
     this.game_state.prefabs.items_menu.hide();
+    // hide magic skills menu
+    this.game_state.prefabs.magicskills_menu.disable();
+    this.game_state.prefabs.magicskills_menu.hide();
+    // hide attack skills menu
+    
+    // show actions menu
     this.game_state.prefabs.actions_menu.show();
     this.game_state.prefabs.actions_menu.enable();
 };

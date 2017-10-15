@@ -8,12 +8,35 @@ demo.Inventory = function (game_state, name, position, properties) {
         "wine": demo.Wine.prototype.constructor,
         "bread": demo.Bread.prototype.constructor
     };
- 
+    
     this.items = [];
+    
+    this.game_state.groups["items"].forEach(function(item_object){
+        if (item_object.name != "inventory"){
+            this.items.push(item_object);
+        }
+    }, this);
 };
  
 demo.Inventory.prototype = Object.create(demo.Prefab.prototype);
 demo.Inventory.prototype.constructor = demo.Inventory;
+
+demo.Inventory.prototype.create_menu = function (position) {
+    "use strict";
+    var menu_items, item_index, item, menu_item, items_menu;
+    // create units menu items
+    item_index = 0;
+    menu_items = [];
+    for (item_index = 0; item_index < this.items.length; item_index += 1) {
+        item = this.items[item_index];
+        menu_item = new demo.ItemMenuItem(this.game_state, item.name + "_menu_item", {x: position.x, y: position.y + item_index * 50}, {group: "hud", text: item.name, style: Object.create(this.game_state.TEXT_STYLE)});
+        menu_items.push(menu_item);
+    };
+    
+    // create units menu
+    items_menu = new demo.Menu(this.game_state, "items_menu", position, {group: "hud", menu_items: menu_items});
+    items_menu.hide();
+};
  
 demo.Inventory.prototype.collect_item = function (item_object) {
     "use strict";
@@ -30,24 +53,7 @@ demo.Inventory.prototype.use_item = function (item_name, target) {
     for (item_index = 0; item_index < this.items.length; item_index += 1) {
         if (this.items[item_index].name === item_name) {
             this.items[item_index].use(target);
-            this.items.splice(item_index, 1);
             break;
         }
     }
-};
-
-demo.Inventory.prototype.create_menu = function (position) {
-    "use strict";
-    var menu_items, item_index, item, menu_item, items_menu;
-    // create units menu items
-    item_index = 0;
-    menu_items = [];
-    for (item_index = 0; item_index < this.items.length; item_index += 1) {
-        item = this.items[item_index];
-        menu_item = new demo.ItemMenuItem(this.game_state, item.name + "_menu_item", {x: position.x, y: position.y + item_index * 20}, {group: "hud", text: item.name, style: Object.create(this.game_state.TEXT_STYLE)});
-        menu_items.push(menu_item);
-    }
-    // create units menu
-    items_menu = new demo.Menu(this.game_state, "items_menu", position, {group: "hud", menu_items: menu_items});
-    items_menu.hide();
 };

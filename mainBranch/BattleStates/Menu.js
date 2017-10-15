@@ -6,6 +6,7 @@ demo.Menu = function (game_state, name, position, properties) {
     demo.Prefab.call(this, game_state, name, position, properties);
     
     this.visible = false;
+    this.name = name;
     
     this.menu_items = properties.menu_items;
     
@@ -88,6 +89,10 @@ demo.Menu.prototype.show = function () {
     "use strict";
     this.menu_items.forEach(function (menu_item) {
         menu_item.visible = true;
+        if (!!(menu_item.item_quantity)){
+            menu_item.item_quantity.visibile = true;
+            menu_item.item_quantity.visible = true;
+        }
     }, this);
 };
 
@@ -95,5 +100,9 @@ demo.Menu.prototype.hide = function () {
     "use strict";
     this.menu_items.forEach(function (menu_item) {
         menu_item.visible = false;
+        if (!!(menu_item.item_quantity)){
+            menu_item.item_quantity.visibile = false;
+            menu_item.item_quantity.visible = false;
+        }
     }, this);
 };

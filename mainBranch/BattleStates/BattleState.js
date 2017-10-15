@@ -9,7 +9,13 @@ demo.BattleState = function () {
         "rectangle": demo.Prefab.prototype.constructor,
         "player_unit": demo.PlayerUnit.prototype.constructor,
         "enemy_unit": demo.EnemyUnit.prototype.constructor,
-        "inventory": demo.Inventory.prototype.constructor
+        "inventory": demo.Inventory.prototype.constructor,
+        "wine": demo.Wine.prototype.constructor,
+        "bread": demo.Bread.prototype.constructor,
+        "heal": demo.Heal.prototype.constructor,
+        "scroll": demo.SwordScroll.prototype.constructor,
+        "miracle": demo.Miracle.prototype.constructor,
+        "aod": demo.AngelOfDeath.prototype.constructor,
     };
     
     this.TEXT_STYLE = {font: "30px Impact", fill: "#FFFFFF"};
@@ -21,9 +27,8 @@ demo.BattleState.prototype.constructor = demo.BattleState;
 demo.BattleState.prototype.init = function (level_data, extra_parameters) {
     "use strict";
     this.level_data = level_data;
-    this.encounter = extra_parameters.encounter;
-    this.party_data = extra_parameters.party_data;
-    // receive the inventory from WorldState
+    //this.encounter = extra_parameters.encounter;
+    //this.party_data = extra_parameters.party_data;
     this.inventory = extra_parameters.inventory;
     
     this.scale.scaleMode = Phaser.ScaleManager.RESIZE;
@@ -53,13 +58,27 @@ demo.BattleState.prototype.create = function () {
             // create prefab
             this.create_prefab(prefab_name, this.level_data.prefabs[prefab_name]);
         }
-    }
+    };
     
     // if there is no inventory from WorldState, create an empty one
     if (this.inventory) {
         this.prefabs.inventory = this.inventory;
     } else {
-        this.prefabs.inventory = new demo.Inventory(this, "inventory", {x: 0, y: 0}, {group: "items"});
+        this.prefabs.inventory = new demo.Inventory(this, "inventory", {x: 477, y: 480}, {group: "items"});
+    }
+    
+    // Magic Skills list
+    if (this.magicskills) {
+        this.prefabs.magicskills = this.attackskills;
+    } else {
+        this.prefabs.magicskills = new demo.MagicInventory(this, "magicskills", {x: 477, y: 480}, {group: "skills"});
+    }
+    
+    // Attack Skills list
+    if (this.attackskills) {
+        this.prefabs.attackskills = this.attackskills;
+    } else {
+        this.prefabs.attackskills = new demo.AttackInventory(this, "attackskills", {x: 477, y: 480}, {group: "skills"});
     }
     
     // create enemy units
@@ -123,6 +142,12 @@ demo.BattleState.prototype.init_hud = function () {
     
     // create items menu
     this.prefabs.inventory.create_menu({x: 477, y: 480});
+    
+    // create MagicSkills menu
+    this.prefabs.magicskills.create_menu({x: 477, y: 480});
+    
+    // create AttackSkills menu
+    this.prefabs.attackskills.create_menu({x: 477, y: 480});
 };
 
 demo.BattleState.prototype.show_units = function (group_name, position, menu_item_constructor) {
@@ -139,14 +164,18 @@ demo.BattleState.prototype.show_units = function (group_name, position, menu_ite
     }, this);
     // create units menu
     units_menu = new demo.Menu(this, group_name + "_menu", position, {group: "hud", menu_items: menu_items});
+    
+    if (group_name === "items"){
+        units_menu.hide();
+    }
 };
 
 demo.BattleState.prototype.show_player_actions = function (position) {
     "use strict";
     var actions, actions_menu_items, action_index, actions_menu;
     // available actions
-    actions = [{text: "Attack", item_constructor: demo.AttackMenuItem.prototype.constructor},
-               {text: "Magic", item_constructor: demo.MagicAttackMenuItem.prototype.constructor},
+    actions = [{text: "Attacks", item_constructor: demo.AttackInventoryMenuItem.prototype.constructor},
+               {text: "Magic Skills", item_constructor: demo.MagicInventoryMenuItem.prototype.constructor},
                {text: "Item", item_constructor: demo.InventoryMenuItem.prototype.constructor}];
     actions_menu_items = [];
     action_index = 0;
